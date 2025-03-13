@@ -1,6 +1,6 @@
 import "./singlePage.scss";
 import Slider from "../../components/slider/Slider";
-import Map from "../../components/map/Map";
+// import Map from "../../components/map/Map";
 import { useNavigate, useLoaderData } from "react-router-dom";
 import DOMPurify from "dompurify";
 import { useContext, useState } from "react";
@@ -135,9 +135,9 @@ function SinglePage() {
             </div>
           </div>
           <p className="title">Location</p>
-          <div className="mapContainer">
+          {/* <div className="mapContainer">
             <Map items={[post]} />
-          </div>
+          </div> */}
           <div className="buttons">
             <button>
               <img src="/chat.png" alt="" />

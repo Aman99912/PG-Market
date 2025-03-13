@@ -29,8 +29,6 @@ function NewPostPage() {
           bathroom: parseInt(inputs.bathroom),
           type: inputs.type,
           property: inputs.property,
-          latitude: inputs.latitude,
-          longitude: inputs.longitude,
           images: images,
         },
         postDetail: {
@@ -85,14 +83,7 @@ function NewPostPage() {
               <label htmlFor="bathroom">Bathroom Number</label>
               <input min={1} id="bathroom" name="bathroom" type="number" />
             </div>
-            <div className="item">
-              <label htmlFor="latitude">Latitude</label>
-              <input id="latitude" name="latitude" type="text" />
-            </div>
-            <div className="item">
-              <label htmlFor="longitude">Longitude</label>
-              <input id="longitude" name="longitude" type="text" />
-            </div>
+           
             <div className="item">
               <label htmlFor="type">Type</label>
               <select name="type">

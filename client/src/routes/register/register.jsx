@@ -25,7 +25,7 @@ function Register() {
         email,
         password,
       });
-alert("register")
+
       navigate("/login");
     } catch (err) {
       alert("failed")

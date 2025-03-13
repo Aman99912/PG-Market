@@ -29,10 +29,10 @@ function Login() {
 
       updateUser(res.data)
 // console.log(res);
-alert("Login")
+
       navigate("/");
     } catch (err) {
-      alert("failed")
+      alert("Failed to login")
       setError(err.response.data.message);
     } finally {
       setIsLoading(false);
