@@ -11,41 +11,46 @@ function NewPostPage() {
   const [images, setImages] = useState([]);
   const [error, setError] = useState("");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const inputs = Object.fromEntries(formData);
 
+    // Debugging logs
+    console.log("Form Inputs:", inputs);
+    console.log("Uploaded Images:", images);
+
     try {
       const res = await apiRequest.post("/posts", {
         postData: {
           title: inputs.title,
-          price: parseInt(inputs.price),
+          price: inputs.price ? parseInt(inputs.price) : 0,
           address: inputs.address,
           city: inputs.city,
-          bedroom: parseInt(inputs.bedroom),
-          bathroom: parseInt(inputs.bathroom),
+          bedroom: inputs.bedroom ? parseInt(inputs.bedroom) : 1,
+          bathroom: inputs.bathroom ? parseInt(inputs.bathroom) : 1,
           type: inputs.type,
           property: inputs.property,
-          images: images,
+          images: images.length ? images : [],
         },
         postDetail: {
           desc: value,
           utilities: inputs.utilities,
           pet: inputs.pet,
-          income: inputs.income,
-          size: parseInt(inputs.size),
-          school: parseInt(inputs.school),
-          bus: parseInt(inputs.bus),
-          restaurant: parseInt(inputs.restaurant),
+          income: inputs.income || "",
+          size: inputs.size ? parseInt(inputs.size) : 0,
+          school: inputs.school ? parseInt(inputs.school) : 0,
+          bus: inputs.bus ? parseInt(inputs.bus) : 0,
+          restaurant: inputs.restaurant ? parseInt(inputs.restaurant) : 0,
         },
       });
-      navigate("/"+res.data.id)
+
+      navigate(`/${res.data.id}`);
     } catch (err) {
-      console.log(err);
-      setError(error);
+      console.error("API Error:", err);
+      setError(err.message);
     }
   };
 
@@ -57,15 +62,15 @@ function NewPostPage() {
           <form onSubmit={handleSubmit}>
             <div className="item">
               <label htmlFor="title">Title</label>
-              <input id="title" name="title" type="text" />
+              <input id="title" name="title" type="text" required />
             </div>
             <div className="item">
               <label htmlFor="price">Price</label>
-              <input id="price" name="price" type="number" />
+              <input id="price" name="price" type="number" min="0" required />
             </div>
             <div className="item">
               <label htmlFor="address">Address</label>
-              <input id="address" name="address" type="text" />
+              <input id="address" name="address" type="text" required />
             </div>
             <div className="item description">
               <label htmlFor="desc">Description</label>
@@ -73,39 +78,35 @@ function NewPostPage() {
             </div>
             <div className="item">
               <label htmlFor="city">City</label>
-              <input id="city" name="city" type="text" />
+              <input id="city" name="city" type="text" required />
             </div>
             <div className="item">
               <label htmlFor="bedroom">Bedroom Number</label>
-              <input min={1} id="bedroom" name="bedroom" type="number" />
+              <input id="bedroom" name="bedroom" type="number" min="1" required />
             </div>
             <div className="item">
               <label htmlFor="bathroom">Bathroom Number</label>
-              <input min={1} id="bathroom" name="bathroom" type="number" />
+              <input id="bathroom" name="bathroom" type="number" min="1" required />
             </div>
-           
             <div className="item">
               <label htmlFor="type">Type</label>
-              <select name="type">
-                <option value="rent" defaultChecked>
-                  Rent
-                </option>
+              <select name="type" required>
+                <option value="rent" defaultChecked>Rent</option>
                 <option value="buy">Buy</option>
               </select>
             </div>
             <div className="item">
-              <label htmlFor="type">Property</label>
-              <select name="property">
+              <label htmlFor="property">Property</label>
+              <select name="property" required>
                 <option value="apartment">Apartment</option>
                 <option value="house">House</option>
                 <option value="condo">Condo</option>
                 <option value="land">Land</option>
               </select>
             </div>
-
             <div className="item">
               <label htmlFor="utilities">Utilities Policy</label>
-              <select name="utilities">
+              <select name="utilities" required>
                 <option value="owner">Owner is responsible</option>
                 <option value="tenant">Tenant is responsible</option>
                 <option value="shared">Shared</option>
@@ -113,50 +114,45 @@ function NewPostPage() {
             </div>
             <div className="item">
               <label htmlFor="pet">Pet Policy</label>
-              <select name="pet">
+              <select name="pet" required>
                 <option value="allowed">Allowed</option>
                 <option value="not-allowed">Not Allowed</option>
               </select>
             </div>
             <div className="item">
               <label htmlFor="income">Income Policy</label>
-              <input
-                id="income"
-                name="income"
-                type="text"
-                placeholder="Income Policy"
-              />
+              <input id="income" name="income" type="text" placeholder="Income Policy" />
             </div>
             <div className="item">
               <label htmlFor="size">Total Size (sqft)</label>
-              <input min={0} id="size" name="size" type="number" />
+              <input id="size" name="size" type="number" min="0" />
             </div>
             <div className="item">
               <label htmlFor="school">School</label>
-              <input min={0} id="school" name="school" type="number" />
+              <input id="school" name="school" type="number" min="0" />
             </div>
             <div className="item">
-              <label htmlFor="bus">bus</label>
-              <input min={0} id="bus" name="bus" type="number" />
+              <label htmlFor="bus">Bus</label>
+              <input id="bus" name="bus" type="number" min="0" />
             </div>
             <div className="item">
               <label htmlFor="restaurant">Restaurant</label>
-              <input min={0} id="restaurant" name="restaurant" type="number" />
+              <input id="restaurant" name="restaurant" type="number" min="0" />
             </div>
             <button className="sendButton">Add</button>
-            {error && <span>error</span>}
+            {error && <span className="error">{error}</span>}
           </form>
         </div>
       </div>
       <div className="sideContainer">
-        {images.map((image, index) => (
-          <img src={image} key={index} alt="" />
+        {images.length > 0 && images.map((image, index) => (
+          <img src={image} key={index} alt="Uploaded" />
         ))}
         <UploadWidget
           uwConfig={{
             multiple: true,
-            cloudName: "lamadev",
-            uploadPreset: "estate",
+            cloudName: "dwa1cvbu3",
+            uploadPreset: "pgMarket",
             folder: "posts",
           }}
           setState={setImages}
